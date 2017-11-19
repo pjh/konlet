@@ -44,7 +44,7 @@ command](https://cloud.google.com/container-registry/docs/pushing-and-pulling):
 $ gcloud docker -- push gcr.io/$MY_PROJECT/gce-containers-startup
 ```
 
-### Cross-compile to Windows
+### Windows
 
 Container startup agent is deployed as a Docker container and is hosted in
 Container Registry:
@@ -61,6 +61,19 @@ location in your Go workspace, e.g.
 from the repository root:
 
 ```shell
+> go get github.com/Microsoft/go-winio
+> go build github.com/GoogleCloudPlatform/konlet/gce-containers-startup
+```
+
+The container startup agent can also be cross-compiled for Windows on a Linux
+host by invoking these commands:
+
+```shell
+$ cd $HOME/go  # or $GOPATH
+$ mkdir github.com/GoogleCloudPlatform
+$ cd github.com/GoogleCloudPlatform
+$ git clone git@github.com:GoogleCloudPlatform/konlet.git
+$ cd konlet
 # go get -d to download to the workspace but not install on the host.
 $ GOOS=windows go get -d github.com/Microsoft/go-winio
 $ GOOS=windows go build github.com/GoogleCloudPlatform/konlet/gce-containers-startup
