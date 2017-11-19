@@ -22,8 +22,8 @@ import (
 	"flag"
 
 	yaml "gopkg.in/yaml.v2"
-	utils "github.com/konlet/utils"
-	api "github.com/konlet/types"
+	utils "github.com/pjh/konlet/gce-containers-startup/utils"
+	api "github.com/pjh/konlet/gce-containers-startup/types"
 )
 
 const METADATA_SERVER = "http://metadata.google.internal/computeMetadata/v1/instance/attributes/gce-container-declaration"

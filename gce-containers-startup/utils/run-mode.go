@@ -33,10 +33,8 @@ import (
 
 	"io"
 
-	api "github.com/konlet/types"
+	api "github.com/pjh/konlet/gce-containers-startup/types"
 )
-
-const DOCKER_UNIX_SOCKET = "unix:///var/run/docker.sock"
 
 var (
 	gcploggingFlag = flag.Bool("gcp-logging", true, "whether to configure GCP Logging")
@@ -67,7 +65,7 @@ type ContainerRunner struct {
 func GetDefaultRunner() (*ContainerRunner, error) {
 	var dockerClient DockerApiClient
 	var err error
-	dockerClient, err = dockerapi.NewClient(DOCKER_UNIX_SOCKET, "", nil, nil)
+	dockerClient, err = dockerapi.NewClient(dockerapi.DefaultDockerHost, "", nil, nil)
 	if err != nil {
 		return nil, err
 	}
