@@ -34,7 +34,7 @@ import (
 
 	"io"
 
-	api "github.com/konlet/types"
+	api "github.com/pjh/konlet/gce-containers-startup/types"
 )
 
 const DOCKER_UNIX_SOCKET = "unix:///var/run/docker.sock"
