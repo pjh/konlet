@@ -46,6 +46,8 @@ $ gcloud docker -- push gcr.io/$MY_PROJECT/gce-containers-startup
 
 ### Windows
 
+The container startup agent works on Windows Server, version 1709 and later.
+
 Container startup agent is deployed as a Docker container and is hosted in
 Container Registry:
 [gcr.io/gce-containers/konlet](http://gcr.io/gce-containers/konlet).
@@ -79,22 +81,22 @@ $ GOOS=windows go get -d github.com/Microsoft/go-winio
 $ GOOS=windows go build github.com/GoogleCloudPlatform/konlet/gce-containers-startup
 ```
 
-Export your GCP project name to an environment variable:
+Export your GCP project name to an environment variable in Powershell:
 ```shell
-$ export MY_PROJECT=your-project-name
+> $MY_PROJECT = "your-project-name"
 ```
 
-To build a Docker image, copy the build binary to the 'docker' directory and
-invoke the docker build command:
+To build a Docker image, run the following Powershell commands to copy the build
+binary to the `docker` directory and perform the docker build:
 ```shell
-$ cp gce-containers-startup.exe docker/
-$ docker build docker/ -t gcr.io/$MY_PROJECT/gce-containers-startup
+> cp gce-containers-startup.exe docker-windows/
+> docker build docker-windows/ -t gcr.io/$MY_PROJECT/gce-containers-startup
 ```
 
 To push resulting Docker image to Google Container Registry you can use [gcloud
 command](https://cloud.google.com/container-registry/docs/pushing-and-pulling):
 ```shell
-$ gcloud docker -- push gcr.io/$MY_PROJECT/gce-containers-startup
+> gcloud docker -- push gcr.io/$MY_PROJECT/gce-containers-startup
 ```
 
 ## Usage

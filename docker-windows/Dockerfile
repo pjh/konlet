@@ -12,8 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# TODO(peterhornyack): switch to 1709 once development is complete.
 #FROM microsoft/nanoserver:1709
-FROM microsoft/windowsservercore:1709
+#FROM microsoft/windowsservercore:1709
+FROM microsoft/windowsservercore:latest
 MAINTAINER peterhornyack@google.com
 
 # TODO(peterhornyack): where is iptables used?
