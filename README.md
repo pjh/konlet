@@ -64,6 +64,9 @@ from the repository root:
 
 ```shell
 > go get github.com/Microsoft/go-winio
+
+# If you fork the repository then substitute your github username for
+# GoogleCloudPlatform:
 > go build github.com/GoogleCloudPlatform/konlet/gce-containers-startup
 ```
 
@@ -89,8 +92,8 @@ Export your GCP project name to an environment variable in Powershell:
 To build a Docker image, run the following Powershell commands to copy the build
 binary to the `docker` directory and perform the docker build:
 ```shell
-> cp gce-containers-startup.exe docker-windows/
-> docker build docker-windows/ -t gcr.io/$MY_PROJECT/gce-containers-startup
+> cp gce-containers-startup.exe .\docker-windows\
+> docker build .\docker-windows\ -t gcr.io/$MY_PROJECT/gce-containers-startup
 ```
 
 To push resulting Docker image to Google Container Registry you can use [gcloud
