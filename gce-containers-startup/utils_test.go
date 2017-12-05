@@ -16,7 +16,7 @@ package main
 
 import (
 	"testing"
-	utils "github.com/konlet/utils"
+	utils "github.com/pjh/konlet/gce-containers-startup/utils"
 	"fmt"
 )
 
