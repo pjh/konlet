@@ -16,6 +16,8 @@ package main
 
 import (
 	"fmt"
+	"testing"
+	utils "github.com/pjh/konlet/gce-containers-startup/utils"
 	"io"
 	"io/ioutil"
 	"reflect"
