@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	api "github.com/konlet/types"
+	api "github.com/pjh/konlet/gce-containers-startup/types"
 )
 
 type VolumeHostPathAndMode struct {
