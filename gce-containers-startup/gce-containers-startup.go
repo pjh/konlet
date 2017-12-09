@@ -79,8 +79,10 @@ func main() {
 	var authProvider utils.AuthProvider
 	if *tokenFlag == "" {
 		authProvider = utils.ServiceAccountTokenProvider{}
+		log.Printf("pjh: using ServiceAccountTokenProvider")
 	} else {
 		authProvider = utils.ConstantTokenProvider{Token: *tokenFlag, }
+		log.Printf("pjh: using ConstantTokenProvider")
 	}
 
 	runner, err := utils.GetDefaultRunner()
@@ -96,16 +98,20 @@ func main() {
 }
 
 func ExecStartup(manifestProvider ManifestProvider, authProvider utils.AuthProvider, runner *utils.ContainerRunner, openIptables bool) error {
+	log.Printf("pjh: retrieving manifest")
 	body, err := manifestProvider.RetrieveManifest()
 	if err != nil {
 		return fmt.Errorf("Cannot load container declaration: %v", err)
 	}
+	log.Printf("pjh: retrieved manifest successfully")
 
+	log.Printf("pjh: parsing container declaration")
 	declaration := api.ContainerSpec{}
 	err = yaml.Unmarshal(body, &declaration)
 	if err != nil {
 		return fmt.Errorf("Cannot parse container declaration '%s': %v", body, err)
 	}
+	log.Printf("pjh: successfully parsed container declaration")
 
 	spec := declaration.Spec
 	if len(spec.Containers) != 1 {
@@ -123,7 +129,8 @@ func ExecStartup(manifestProvider ManifestProvider, authProvider utils.AuthProvi
 		log.Printf("Default registry used - Konlet will use empty auth")
 	}
 
-	if openIptables {
+	log.Printf("pjh: skipping OpenIptables()!")
+	if false && openIptables {
 		err = utils.OpenIptables()
 		if err != nil {
 			return fmt.Errorf("Cannot update IPtables: %v", err)

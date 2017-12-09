@@ -38,7 +38,7 @@ import (
 )
 
 var (
-	gcploggingFlag = flag.Bool("gcp-logging", true, "whether to configure GCP Logging")
+	gcploggingFlag = flag.Bool("gcp-logging", false, "whether to configure GCP Logging")
 )
 
 // operationTimeout is the error returned when the docker operations are timeout.
@@ -74,22 +74,26 @@ func GetDefaultRunner() (*ContainerRunner, error) {
 }
 
 func (runner ContainerRunner) RunContainer(auth string, spec api.ContainerSpecStruct, detach bool) error {
+	log.Printf("pjh: calling pullImage")
 	err := pullImage(runner.Client, auth, spec.Containers[0])
 	if err != nil {
 		return err
 	}
 
+	log.Printf("pjh: calling deleteOldContainer")
 	err = deleteOldContainer(runner.Client, spec.Containers[0])
 	if err != nil {
 		return err
 	}
 
 	var id string
+	log.Printf("pjh: calling createContainer")
 	id, err = createContainer(runner.Client, spec)
 	if err != nil {
 		return err
 	}
 
+	log.Printf("pjh: calling startContainer")
 	err = startContainer(runner.Client, id)
 	if err != nil {
 		return err
@@ -116,17 +120,26 @@ func pullImage(dockerClient DockerApiClient, auth string, spec api.Container) er
 	opts := dockertypes.ImagePullOptions{}
 	opts.RegistryAuth = base64Auth
 
+	// TODO(peterhornyack): documentation at
+	// https://godoc.org/github.com/moby/moby/client#Client.ImagePull.
 	log.Printf("Pulling image: '%s'", spec.Image)
+	// TODO(peterhornyack): this can take a while for Windows containers; add
+	// synchronous status logging somewhere!?!?!
 	resp, err := dockerClient.ImagePull(ctx, spec.Image, opts)
 	if err != nil {
 		return err
 	}
 	defer resp.Close()
 
+	// TODO(peterhornyack): note that this log message will get printed while
+	// waiting for the pull to complete, which may take a while on Windows.
+	log.Printf("pjh: calling ReadAll on response")
 	body, err := ioutil.ReadAll(resp)
 	if err != nil {
 		return err
 	}
+	// TODO(peterhornyack): this prints a whole ton of status updates from e.g.
+	// the 1.4 GB IIS container pull. 
 	log.Printf("Received ImagePull response: (%s).\n", body)
 
 	return nil
@@ -249,6 +262,9 @@ func createContainer(dockerClient DockerApiClient, spec api.ContainerSpecStruct)
 		env = append(env, fmt.Sprintf("%s=%s", envVar.Name, envVar.Value))
 	}
 
+	// TODO(peterhornyack): on Windows this causes "Error: Failed to start
+	// container: Error response from daemon: {"message":"logger: no log
+	// driver named 'gcplogs' is registered"}".
 	logConfig := dockercontainer.LogConfig{}
 	if *gcploggingFlag {
 		logConfig.Type = "gcplogs"
@@ -283,7 +299,7 @@ func createContainer(dockerClient DockerApiClient, spec api.ContainerSpecStruct)
 			Binds:       hostPathBinds,
 			Tmpfs:       tmpFsBinds,
 			AutoRemove:  autoRemove,
-			NetworkMode: "host",
+			//NetworkMode: "host",
 			Privileged:  container.SecurityContext.Privileged,
 			LogConfig:   logConfig,
 			RestartPolicy: dockercontainer.RestartPolicy{
@@ -292,6 +308,7 @@ func createContainer(dockerClient DockerApiClient, spec api.ContainerSpecStruct)
 		},
 	}
 
+	log.Printf("pjh: calling ContainerCreate")
 	createResp, err := dockerClient.ContainerCreate(
 		ctx, opts.Config, opts.HostConfig, opts.NetworkingConfig, opts.Name)
 	if ctxErr := contextError(ctx, "Create container"); ctxErr != nil {
