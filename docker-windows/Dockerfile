@@ -16,7 +16,7 @@
 #FROM microsoft/nanoserver:1709
 #FROM microsoft/windowsservercore:1709
 FROM microsoft/windowsservercore:latest
-MAINTAINER peterhornyack@google.com
+MAINTAINER pjh@users.noreply.github.com
 
 # TODO(peterhornyack): where is iptables used?
 #RUN apt-get update && apt-get install -y iptables
